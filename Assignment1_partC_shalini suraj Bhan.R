@@ -1,50 +1,97 @@
+##### Packages to Install #####
+install.packages("tidyverse")
+install.packages("readr")
+install.packages("dplyr")
+install.packages("fansi")
+install.packages("stringi")
+install.packages("ape")
+install.packages("RSQLite")
+install.packages("DECIPHER")
+install.packages("stringr")
+source("https://bioconductor.org/biocLite.R")
+biocLite("msa")
+biocLite("Biostrings")
+abiocLite("muscle")
+biocLite("msa")
+biocLite("DECIPHER")
+
+##### Data Analysis ####
 
 ############### Importing the data file
 
-data2 <- read.delim(file.choose(), header = T)
-data2
+
+
+#bold_data <- read.delim(file.choose(), header = T)
+#bold_data
+
+
+
+library(tidyverse)
+
+bold_data <- read_tsv("http://www.boldsystems.org/index.php/API_Public/combined?taxon=Pseudomonas&format=tsv") 
+
+#N Loading selected data set of Daphnia specimen using Bold Api
+
+
+#N The Data set checking and analysis works well but coild be expanded upon
+
 
 ############### Checking data-sets
 
 ############### Class and summary
-class(data2)
-summary(data2)
-str(data2)
+class(bold_data) #tbl data.frame
+summary(bold_data) #540 entries
+str(bold_data)
 
 ############### Variable names.
-names(data2)
+names(bold_data)
 
-############### Species richness of data (found: 127)
+############### Species richness of data 
 
-length(unique(data2$species_name))
+length(unique(bold_data$species_name)) #40 
 
-############### No. of BINs (150) (3188)
+#N The BIN URI markercode was a good option for the original dataset, however the genus Pseudomonas lacks BIN URIs, they are NA in the data. As an alternative we can pick 
 
-length(unique(data2$bin_uri))
+############### No. of BINs 
+
+length(unique(bold_data$bin_uri))
 
 ############### Specimen bearing BINS.
 
-length(grep("[:]", data2$bin_uri))
+length(grep("[:]", bold_data$bin_uri)) 
 
 ############### Data Reduction
 
-data3 <- data2[c(grep(":", data2$bin_uri)),]
+# data3 <- bold_data[c(grep(":", bold_data$bin_uri)),]
+# 
+# length(data3$bin_uri)
+# 
+# sum(is.na(data3$bin_uri))      
+# 
+# sum(is.na(bold_data$bin_uri))
 
-length(data3$bin_uri)
 
-sum(is.na(data3$bin_uri))      
+#N selecting data with bin_uris 
 
-sum(is.na(data2$bin_uri))
+library(dplyr)
+bold_data %>%
+  select(bin_uri) -> data_bold #select function to extract wanted marker columns
 
-############## Country with most barcode data (Canada: 3188)
 
-install.packages("fansi")
+############## Country with most barcode data 
+
+
 library(fansi)
 
-data3 %>%
+bold_data %>%
   group_by(country) %>%
   summarize(count = length(processid)) %>%
   arrange(desc(count))
+
+
+#United States 54
+
+
 
 ############### Biodiversity analysis
 
@@ -53,10 +100,9 @@ library(vegan)
 
 ### Groupind data and counting records in each bin
 
-data4 <- data3 %>%
+data_bold <- data_bold %>%
   group_by(bin_uri) %>%
   count(bin_uri)
-data4
 
 ############## changing the data set format
 
@@ -66,51 +112,31 @@ library(magrittr)
 
 library(tidyverse)
 
-data5 <- spread(data4, bin_uri, n)
-data5
+spread_data <- spread(data_bold, bin_uri, n)
 
- 
+
 ############## checking unique markers
 
-unique(data2$markercode)
+unique(bold_data$markercode)
 
-############### Installing packages
 
-install.packages("tidyverse")
-library(tidyverse)
 
-install.packages("stringi")
+
+
 library(stringi)
-
-
-
-install.packages("ape")
 library(ape)
-
-install.packages("RSQLite")
 library(RSQLite)
-
-install.packages("DECIPHER")
-install.packages("stringr")
 library(stringr)
-
-source("https://bioconductor.org/biocLite.R")
-biocLite("msa")
-biocLite("Biostrings")
-abiocLite("muscle")
-biocLite("msa")
-biocLite("DECIPHER")
 library(Biostrings)
 library(muscle)
 library(msa)
 library(DECIPHER)
 
-install.packages("dplyr")
-library(dplyr)
+
 
 ############### Database, with list of markercodes
 
-MarkerCodeList <- data2 %>%
+MarkerCodeList <- bold_data %>%
   group_by(markercode) %>%
   summarize(n = length(processid)) %>%
   arrange(desc(n)) %>%
@@ -118,12 +144,12 @@ MarkerCodeList <- data2 %>%
 
 ############## Converting to data string
 
-Data2String <- DNAStringSet(data2$nucleotides)
+bold_dataString <- DNAStringSet(bold_data$nucleotides)
 
 
-############### Subseting the dataframe data2 to retain those records having a COI-5P markercode.
+############### Subseting the dataframe bold_data to retain those records having a COI-5P markercode.
 
-DataCOI <- data2 %>%
+DataCOI <- bold_data %>%
   filter(markercode == "COI-5P") %>%
   filter(str_detect('nucleotides', "[ACGT]"))
 DataCOI
