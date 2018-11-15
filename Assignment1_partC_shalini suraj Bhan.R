@@ -25,7 +25,7 @@ library(tidyverse) %>% bold_data <- read_tsv("http://www.boldsystems.org/index.p
 
 ##### Data Analysis ####
 
-##### Part 1: Data Filtering ####
+##### Part 1: Data Filtering and checking ####
 
 library(stringi) 
 library(ape)
@@ -49,14 +49,11 @@ names(bold_data)
 
 length(unique(bold_data$species_name)) #40 
 
-#Using the select function instead of grepping 
-
 #N looking at NA values
 
 sum(is.na(bold_data$bin_uri))
 
-
-#N selecting data 
+#N using the select function instead of grepping 
 
 library(dplyr)
 bold_data %>%
@@ -78,13 +75,6 @@ MarkerCodeList <- bold_data %>%
   arrange(desc(n)) %>%
   print()
 
-############### Subseting the dataframe bold_data to retain those records having a COI-5P markercode.
-
-DataCOI <- bold_data %>%
-  filter(markercode == "COI-5P") %>%
-  filter(str_detect('nucleotides', "[ACGT]"))
-DataCOI
-
 
 ##### Part 2 Biodiversity ####
 
@@ -94,7 +84,6 @@ bold_data2 %>%
   group_by(country) %>%
   summarize(count = length(processid)) %>%
   arrange(desc(count))
-
 
 #N Possible visualisation
 
@@ -107,18 +96,17 @@ mapCountryData(matched, nameColumnToPlot="value", mapTitle="Pseudomonas samples 
 
 library(vegan)
 
-############## changing the data set format
-
 library(dplyr)
 library(magrittr)
 library(tidyverse)
 
+############### Subseting the dataframe bold_data to retain those records having a COI-5P markercode.
+
+DataCOI <- bold_data[which(bold_data$markercode == "COI-5P"), ] #simplified COI-5P code
 
 ##### Part 3 Phylogeny ####
 
 library(dplyr); bold_data2 %>% group_by(country) %>% sample_n(1) -> bold_sample #sample data by countries, to reduce dataset 
-
-
 
 #N Converted to DNA string but no further analysis performed 
 
@@ -128,7 +116,6 @@ bold_data_string <- DNAStringSet(bold_sample$nucleotides) #N No NA values accept
 
 #NPicking up from where the anaylsis left off using the DNA stringset to perform a muscle alignment 
 #N create dendrogram distance matrix
-#N Possibly Specaccum for biodiversity 
 
 bold_data_alignment <- DNAStringSet(muscle::muscle(bold_data_string, maxiters = 2,diags = TRUE)) #running muscle MSA 
 
