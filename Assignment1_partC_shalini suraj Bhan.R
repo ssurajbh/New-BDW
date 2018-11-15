@@ -1,5 +1,9 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 ##### Packages to Install #####
+=======
+#N To tidy up the script, I created a list of all the packages that the user is asked to install. 
+>>>>>>> 0e05fd4172b572555e990a191b4d045590da1a3f
 =======
 #N To tidy up the script, I created a list of all the packages that the user is asked to install. 
 >>>>>>> 0e05fd4172b572555e990a191b4d045590da1a3f
@@ -7,6 +11,7 @@
 install.packages("tidyverse")
 install.packages("readr")
 install.packages("dplyr")
+<<<<<<< HEAD
 <<<<<<< HEAD
 install.packages("fansi")
 install.packages("stringi")
@@ -44,6 +49,8 @@ library(DECIPHER)
 ############### Checking data-sets
 
 =======
+=======
+>>>>>>> 0e05fd4172b572555e990a191b4d045590da1a3f
 
 ############### Importing the data file
 
@@ -69,6 +76,9 @@ bold_data <- read_tsv("http://www.boldsystems.org/index.php/API_Public/combined?
 ############### Checking data-sets
 
 ############### Class and summary
+<<<<<<< HEAD
+>>>>>>> 0e05fd4172b572555e990a191b4d045590da1a3f
+=======
 >>>>>>> 0e05fd4172b572555e990a191b4d045590da1a3f
 class(bold_data) #tbl data.frame
 summary(bold_data) #540 entries
@@ -81,6 +91,7 @@ names(bold_data)
 
 length(unique(bold_data$species_name)) #40 
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #Using the select function instead of grepping 
 
@@ -125,6 +136,8 @@ DataCOI
 
 bold_data2 %>%
 =======
+=======
+>>>>>>> 0e05fd4172b572555e990a191b4d045590da1a3f
 #N The BIN URI markercode was a good option for the original dataset, however the genus Pseudomonas lacks BIN URIs, they are NA in the data. As an alternative we can pick 
 
 ############### No. of BINs 
@@ -159,12 +172,16 @@ install.packages("fansi")
 library(fansi)
 
 bold_data %>%
+<<<<<<< HEAD
+>>>>>>> 0e05fd4172b572555e990a191b4d045590da1a3f
+=======
 >>>>>>> 0e05fd4172b572555e990a191b4d045590da1a3f
   group_by(country) %>%
   summarize(count = length(processid)) %>%
   arrange(desc(count))
 
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 #N Possible visualisation
 
@@ -214,6 +231,8 @@ clusters.Daphnia16S <- IdClusters(distanceMatrix1,method = "single", cutoff= 0.0
 
 
 =======
+=======
+>>>>>>> 0e05fd4172b572555e990a191b4d045590da1a3f
 #United States 54
 
 
@@ -300,4 +319,7 @@ class(DataCOI$nucleotides)
 ######## Converting to 18s markerset
 Data18snucleotides <- DNAStringSet(DataCOI$nucleotides)
 Data18snucleotides
+<<<<<<< HEAD
+>>>>>>> 0e05fd4172b572555e990a191b4d045590da1a3f
+=======
 >>>>>>> 0e05fd4172b572555e990a191b4d045590da1a3f
