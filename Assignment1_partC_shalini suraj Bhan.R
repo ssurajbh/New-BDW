@@ -114,7 +114,6 @@ library(magrittr)
 library(tidyverse)
 
 
-
 ##### Part 3 Phylogeny ####
 
 library(dplyr); bold_data2 %>% group_by(country) %>% sample_n(1) -> bold_sample #sample data by countries, to reduce dataset 
@@ -127,14 +126,11 @@ library(dplyr); bold_data2 %>% group_by(country) %>% sample_n(1) -> bold_sample 
 
 bold_data_string <- DNAStringSet(bold_sample$nucleotides) #N No NA values accepted
 
-
 #NPicking up from where the anaylsis left off using the DNA stringset to perform a muscle alignment 
 #N create dendrogram distance matrix
-#N Specaccum for biodiversity 
-
+#N Possibly Specaccum for biodiversity 
 
 bold_data_alignment <- DNAStringSet(muscle::muscle(bold_data_string, maxiters = 2,diags = TRUE)) #running muscle MSA 
-
 
 bold_data_DNAbin<- as.DNAbin(bold_data_alignment)
 
