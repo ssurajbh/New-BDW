@@ -47,18 +47,18 @@ names(bold_data)
 
 length(unique(bold_data$species_name)) #40 
 
-#N looking at NA values
+###############N looking at NA values
 
 sum(is.na(bold_data$bin_uri))
 
-#N using the select function instead of grepping 
+###############N using the select function instead of grepping 
 
 library(dplyr)
 bold_data %>%
   select(processid, species_name, nucleotides, country) -> bold_data2 #select function to extract wanted marker columns
 
-length(is.na(bold_data2)) #identify NA values
-
+############### identify NA values
+length(is.na(bold_data2)) 
 bold_data2 <- na.omit(bold_data2) #N Option to remove NA data
 
 ############## checking unique markers
@@ -76,24 +76,23 @@ MarkerCodeList <- bold_data %>%
 
 ##### Data Analysis Part 2 Biodiversity ####
 
-#N Country with most barcode data gives top 10
+################N Country with most barcode data gives top 10
 
 bold_data2 %>%
   group_by(country) %>%
   summarize(count = length(processid)) %>%
   arrange(desc(count))
 
-#N Possible visualisation
+################N  Visualisation
 
 library(rworldmap)
-bold_dataframe <- as.data.frame(bold_data2)
-countries <- as.data.frame(table(bold_dataframe$country))
-colnames(countries) <- c("country", "value")
-matched <- joinCountryData2Map(countries, joinCode="NAME", nameJoinColumn="country") #matching countries from data to those in the Rworldmap package: 26 matched, 217 did not 
-mapCountryData(matched, nameColumnToPlot="value", mapTitle="Pseudomonas samples per country ", catMethod = "pretty", colourPalette = "white2Black")
+bold_dataframe <- as.data.frame(bold_data2) #N convert to dataframe
+countries <- as.data.frame(table(bold_dataframe$country)) #N select country column
+colnames(countries) <- c("country", "value") #N rename columns
+matched <- joinCountryData2Map(countries, joinCode="NAME", nameJoinColumn="country") #N matching countries from data to those in the Rworldmap package: 26 matched, 217 did not 
+mapCountryData(matched, nameColumnToPlot="value", mapTitle="Pseudomonas samples per country ", catMethod = "pretty", colourPalette = "white2Black") #N plotting parameters 
 
 library(vegan)
-
 library(dplyr)
 library(magrittr)
 library(tidyverse)
@@ -104,22 +103,21 @@ DataCOI <- bold_data[which(bold_data$markercode == "COI-5P"), ]
 
 ##### Data Analysis Part 3 Phylogeny ####
 
-library(dplyr); bold_data2 %>% group_by(country) %>% sample_n(1) -> bold_sample #sample data by countries, to reduce dataset 
-
-#N Converted to DNA string but no further analysis performed 
+library(dplyr); bold_data2 %>% group_by(country) %>% sample_n(1) -> bold_sample #N sample data by countries, to reduce dataset 
 
 ############## Converting to data string
 
 bold_data_string <- DNAStringSet(bold_sample$nucleotides) #N No NA values accepted
 
-#NPicking up from where the anaylsis left off using the DNA stringset to perform a muscle alignment 
-#N create dendrogram distance matrix
+#############N running muscle MSA 
 
-bold_data_alignment <- DNAStringSet(muscle::muscle(bold_data_string, maxiters = 2,diags = TRUE)) #running muscle MSA 
+bold_data_alignment <- DNAStringSet(muscle::muscle(bold_data_string, maxiters = 2,diags = TRUE))
 
 bold_data_DNAbin<- as.DNAbin(bold_data_alignment)
 
-distanceMatrix1 <- dist.dna(bold_data_DNAbin, model = "TN93", as.matrix = TRUE, pairwise.deletion = TRUE) #creating a a pairwise distance matrix using the dist.dna function and selecting the Tamura-Nei 93 (TN93) model which offers a substitution model of nucleotide evolution
+##############N Distance matrix 
+
+distanceMatrix1 <- dist.dna(bold_data_DNAbin, model = "TN93", as.matrix = TRUE, pairwise.deletion = TRUE) #N creating a a pairwise distance matrix using the dist.dna function and selecting the Tamura-Nei 93 (TN93) model which offers a substitution model of nucleotide evolution
 
 clusters.Daphnia16S <- IdClusters(distanceMatrix1,method = "single", cutoff= 0.02, showPlot = TRUE, type = "both", verbose = TRUE) #plotting the clusters using IDclusters creating a distnace similarity matrix at a 0.02 cutoff to provide enough clusters without overdoing it. 
 
