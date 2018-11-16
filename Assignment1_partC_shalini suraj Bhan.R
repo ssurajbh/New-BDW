@@ -23,9 +23,7 @@ install.packages('rworldmap')
 #N Loading selected data set of Daphnia specimen using Bold Api
 library(tidyverse) %>% bold_data <- read_tsv("http://www.boldsystems.org/index.php/API_Public/combined?taxon=Pseudomonas&format=tsv")
 
-##### Data Analysis ####
-
-##### Part 1: Data Filtering and checking ####
+##### Data Analysis Part 1: Data Filtering and checking ####
 
 library(stringi) 
 library(ape)
@@ -76,7 +74,7 @@ MarkerCodeList <- bold_data %>%
   print()
 
 
-##### Part 2 Biodiversity ####
+##### Data Analysis Part 2 Biodiversity ####
 
 #N Country with most barcode data gives top 10
 
@@ -102,9 +100,9 @@ library(tidyverse)
 
 ############### Subseting the dataframe bold_data to retain those records having a COI-5P markercode.
 
-DataCOI <- bold_data[which(bold_data$markercode == "COI-5P"), ] #simplified COI-5P code
+DataCOI <- bold_data[which(bold_data$markercode == "COI-5P"), ] 
 
-##### Part 3 Phylogeny ####
+##### Data Analysis Part 3 Phylogeny ####
 
 library(dplyr); bold_data2 %>% group_by(country) %>% sample_n(1) -> bold_sample #sample data by countries, to reduce dataset 
 
